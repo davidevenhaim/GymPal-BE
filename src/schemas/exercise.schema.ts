@@ -38,9 +38,6 @@ export class Exercise {
   @Column({ type: 'number', nullable: true })
   @IsNumber()
   weight: number;
-
-  @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
-  createDateTime: Date;
 }
 
 export const ExerciseSchema = SchemaFactory.createForClass(Exercise);

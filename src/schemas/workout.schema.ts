@@ -4,6 +4,8 @@ import {
   OneToMany,
   ObjectId,
   ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 import {
@@ -49,6 +51,19 @@ export class Workout {
   @ManyToOne(() => User, (user) => user.workouts)
   @IsNotEmpty()
   user: User;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  updatedAt: Date;
 }
 
 export const WorkoutSchema = SchemaFactory.createForClass(Workout);
