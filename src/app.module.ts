@@ -14,7 +14,6 @@ import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 
 @Module({
   imports: [
-    AuthenticationModule,
     ExerciseModule,
     UserModule,
     WorkoutModule,
