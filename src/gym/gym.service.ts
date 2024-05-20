@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateWorkoutDto } from './dto/create-workout.dto';
-import { UpdateWorkoutDto } from './dto/update-workout.dto';
+
 import {
   getNewServerResponse,
   iServerResponse,
@@ -12,6 +11,8 @@ import { Workout } from '../common/schemas/workout.schema';
 // @@ Mongoose
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { CreateGymDto } from './dto/create-gym.dto';
+import { UpdateGymDto } from './dto/update-gym.dto';
 
 @Injectable()
 export class WorkoutService {
@@ -19,9 +20,9 @@ export class WorkoutService {
     @InjectModel(Workout.name) private workoutModel: Model<Workout>,
   ) {}
 
-  async create(createWorkoutDto: CreateWorkoutDto): Promise<iServerResponse> {
+  async create(createGymDto: CreateGymDto): Promise<iServerResponse> {
     const res = getNewServerResponse();
-    const newWorkout = new this.workoutModel(createWorkoutDto);
+    const newWorkout = new this.workoutModel(createGymDto);
 
     await newWorkout.save();
 
@@ -37,7 +38,7 @@ export class WorkoutService {
     return `This action returns a #${id} workout`;
   }
 
-  update(id: number, updateWorkoutDto: UpdateWorkoutDto) {
+  update(id: number, updateGymDto: UpdateGymDto) {
     return `This action updates a #${id} workout`;
   }
 

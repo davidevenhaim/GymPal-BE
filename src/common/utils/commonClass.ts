@@ -1,8 +1,8 @@
 import { IsNotEmpty } from '@nestjs/class-validator';
-import { Column } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class Location {
-  @Column({ type: 'number' })
+  @ApiProperty({ type: 'number' })
   @IsNotEmpty()
   lng: number;
 }

@@ -20,10 +20,10 @@ import {
 } from '@nestjs/class-validator';
 
 // @@ Schemas
-import { Workout } from './workout.schema';
+import { Workout } from '../schemas/workout.schema';
 
 // @@ Constants
-import { MAX_STRING_LENGTH } from '../common/utils/constants';
+import { MAX_STRING_LENGTH } from '../utils/constants';
 
 export type UserDocument = HydratedDocument<User>;
 

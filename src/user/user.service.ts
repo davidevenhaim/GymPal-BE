@@ -12,7 +12,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 // @@ Schemas
-import { User } from '../schemas/user.schema';
+import { User } from '../common/schemas/user.schema';
 
 // @@ Constants
 import { HASH_SALT_ROUNDS } from '../common/utils/constants';
@@ -23,19 +23,21 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import {
   getNewServerResponse,
   iServerResponse,
-  serverResponseErr,
 } from '../common/dto/response.dto';
+import { UserDal } from './user.dal';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     private jwtService: JwtService,
+    private readonly userDal: UserDal,
   ) {}
 
   async registerUser(user: User): Promise<iServerResponse> {
     let res = getNewServerResponse();
-    const isUserExists = await this.findByUsername(user.username);
+
+    const isUserExists = await this.userDal.findByUsername(user.username);
     if (isUserExists) {
       console.warn('Trying to create a user that already exists.');
       throw new BadRequestException('userExists');
@@ -51,10 +53,7 @@ export class UserService {
   async create(createUserDto: CreateUserDto): Promise<iServerResponse> {
     const res = getNewServerResponse();
 
-    const newUser = new this.userModel(createUserDto);
-    await newUser.save();
-
-    delete newUser.password;
+    const newUser = this.userDal.createUser(createUserDto);
 
     const token = await this.jwtService.signAsync({
       ...newUser,
@@ -67,14 +66,10 @@ export class UserService {
     return res;
   }
 
-  findAll() {
-    return `This action returns all user`;
-  }
-
   async findOne(id: string): Promise<iServerResponse> {
     const res = getNewServerResponse();
 
-    const user = await this.findById(id);
+    const user = await this.userDal.findById(id);
     if (!user) {
       console.warn("Searching for a user that coudn't be found.");
       throw new NotFoundException("User couldn't be found.");
@@ -105,13 +100,5 @@ export class UserService {
 
     res.msg = 'Deleted succesfully';
     return res;
-  }
-
-  private async findById(id: string): Promise<User | undefined> {
-    return this.userModel.findById(id);
-  }
-
-  private async findByUsername(username: string): Promise<User | undefined> {
-    return this.userModel.findOne({ where: { username } });
   }
 }

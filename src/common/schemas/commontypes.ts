@@ -7,8 +7,8 @@ import {
 import { Column } from 'typeorm';
 
 // @@ Utils
-import { ExerciseType } from '../common/utils/enums';
-import { MAX_STRING_LENGTH } from '../common/utils/constants';
+import { ExerciseType } from '../utils/enums';
+import { MAX_STRING_LENGTH } from '../utils/constants';
 
 export interface iExercise {
   name: string;
@@ -58,8 +58,10 @@ export class Location {
   }
 
   @Column({ type: 'number' })
+  @IsNumber()
   lng: number;
 
   @Column({ type: 'number' })
+  @IsNumber()
   lat: number;
 }

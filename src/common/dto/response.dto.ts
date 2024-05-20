@@ -3,12 +3,12 @@ import { HttpStatus } from '@nestjs/common';
 const str: string = 'string';
 
 export interface iServerResponse {
-  status: number;
-  code: ServerCode;
+  status: HttpStatus;
   data?: any;
   msg?: string | object;
 }
 
+// TODO: Use httpstatus enum instaed of "servceCode" enum
 export enum ServerCode {
   Ok = 0,
   Err = -1,
@@ -29,7 +29,6 @@ export const serverResponseErr = (
   res.status = res.status || HttpStatus.INTERNAL_SERVER_ERROR;
   res.data = data.data || undefined;
   res.msg = data.msg || 'Server Error';
-  res.code = ServerCode.Err;
 };
 
 export const getErrLogMsg = (

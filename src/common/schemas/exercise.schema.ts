@@ -16,8 +16,8 @@ import { SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
 // @@ Constants
-import { ExerciseType } from '../common/utils/enums';
-import { MAX_STRING_LENGTH } from '../common/utils/constants';
+import { ExerciseType } from '../utils/enums';
+import { MAX_STRING_LENGTH } from '../utils/constants';
 
 export type ExcerciseDocument = HydratedDocument<Exercise>;
 

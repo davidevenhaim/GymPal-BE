@@ -1,7 +1,6 @@
 import {
   PrimaryGeneratedColumn,
   Column,
-  OneToMany,
   ObjectId,
   ManyToOne,
   CreateDateColumn,
@@ -16,14 +15,14 @@ import {
 } from '@nestjs/class-validator';
 
 // @@ Mongoose
-import { Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 // @@ Constants
-import { MAX_STRING_LENGTH } from '../common/utils/constants';
+import { MAX_STRING_LENGTH } from '../utils/constants';
 
 // @@ Schemas
 import { User } from './user.schema';
-import { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 
 // @@ types
 import { Exercise, Location } from './commontypes';
@@ -41,8 +40,11 @@ export class Workout {
   @MinLength(2)
   name: string;
 
-  @Column(() => Exercise)
-  // the user's excercise - default value empty array.
+  @Prop({
+    type: [
+      { type: mongoose.Schema.Types.ObjectId, ref: 'Exercise', default: [] },
+    ],
+  })
   exercise: Exercise[];
 
   @Column(() => Location)

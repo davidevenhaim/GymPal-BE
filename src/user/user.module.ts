@@ -4,10 +4,14 @@ import { JwtModule } from '@nestjs/jwt';
 
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
-import { User, UserSchema } from '../schemas/user.schema';
+import { User, UserSchema } from '../common/schemas/user.schema';
+
+// @@ DAL - Data Acess Layer
+import { UserDal } from './user.dal';
 
 // @@ Utils
 import { SECRET_KEY, SECRET_KEY_EXPIRY } from '../common/utils/constants';
+import { AuthenticationModule } from '../authentication/authentication.module';
 
 @Module({
   imports: [
@@ -19,6 +23,6 @@ import { SECRET_KEY, SECRET_KEY_EXPIRY } from '../common/utils/constants';
     }),
   ],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService, UserDal],
 })
 export class UserModule {}

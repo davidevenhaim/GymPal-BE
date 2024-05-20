@@ -4,7 +4,7 @@ import { WorkoutController } from './workout.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 
 // @@ Schemas
-import { Workout, WorkoutSchema } from '../schemas/workout.schema';
+import { Workout, WorkoutSchema } from '../common/schemas/workout.schema';
 
 @Module({
   imports: [
