@@ -1,4 +1,4 @@
-import { IsArray, IsNotEmpty } from '@nestjs/class-validator';
+import { IsArray } from '@nestjs/class-validator';
 import {
   ArrayMaxSize,
   ArrayMinSize,
@@ -6,9 +6,13 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
+
 import { DaysOfWeek } from '../../common/utils/enums';
 import { ApiProperty } from '@nestjs/swagger';
-import { Location } from 'src/common/schemas/commontypes';
+
+// @@ Schemas
+import { WorkHours } from '../gym.schema';
+import { Location } from '../../common/utils/classes';
 
 export class CreateGymDto {
   @ApiProperty({ name: 'name', type: String })
@@ -28,21 +32,4 @@ export class CreateGymDto {
   @ApiProperty({ name: 'rating', type: Number })
   @IsNumber()
   rating: number;
-}
-
-export class WorkHours {
-  @ApiProperty({ name: 'isOpen', type: Boolean, default: true })
-  isOpen: boolean; // for closed days.
-
-  @ApiProperty({ name: 'start' })
-  @IsNotEmpty()
-  start: string;
-
-  @ApiProperty({ name: 'end' })
-  @IsNotEmpty()
-  end: string;
-
-  @ApiProperty({ type: 'enum', enum: DaysOfWeek })
-  @IsNotEmpty()
-  day: DaysOfWeek;
 }

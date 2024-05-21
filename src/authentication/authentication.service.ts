@@ -5,32 +5,30 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 // @@ Constants
-import { HASH_SALT_ROUNDS, SECRET_KEY } from '../common/utils/constants';
+import { HASH_SALT_ROUNDS } from '../common/utils/constants';
 
 @Injectable()
 export class AuthenticationService {
-  constructor(
-    private jwtService: JwtService,
-    private secretKey = SECRET_KEY,
-  ) {}
+  constructor(private readonly jwtService: JwtService) {}
 
-  signToken(tokenData: any) {
+  signToken(tokenData: Object | Array<any>) {
     return this.jwtService.signAsync({
       ...tokenData,
     });
   }
 
   verifyToken(token: string) {
-    return this.jwtService.verifyAsync(token, {
-      secret: this.secretKey,
-    });
+    return this.jwtService.verifyAsync(token);
+  }
+
+  isPasswordMatch(
+    userPassword: string,
+    givenPassword: string,
+  ): Promise<boolean> {
+    return bcrypt.compare(givenPassword, userPassword);
   }
 
   encryptPassword(password: string) {
     return bcrypt.hash(password, HASH_SALT_ROUNDS);
   }
-
-  decryptPassword(hashedPassword: string) {}
-
-  loginUser() {}
 }

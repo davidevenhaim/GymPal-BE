@@ -1,48 +1,55 @@
 import { Injectable } from '@nestjs/common';
 
-import {
-  getNewServerResponse,
-  iServerResponse,
-} from '../common/dto/response.dto';
+// @@ DAL
+import { GymDal } from './gym.dal';
 
-// @@ Schemas
-import { Workout } from '../common/schemas/workout.schema';
-
-// @@ Mongoose
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+// @@ Dto's
 import { CreateGymDto } from './dto/create-gym.dto';
 import { UpdateGymDto } from './dto/update-gym.dto';
+import { ObjectId } from 'typeorm';
+import { GymResponseDto } from './dto/gym-response.dto';
 
 @Injectable()
-export class WorkoutService {
-  constructor(
-    @InjectModel(Workout.name) private workoutModel: Model<Workout>,
-  ) {}
+export class GymService {
+  constructor(private readonly gymDal: GymDal) {}
 
-  async create(createGymDto: CreateGymDto): Promise<iServerResponse> {
-    const res = getNewServerResponse();
-    const newWorkout = new this.workoutModel(createGymDto);
+  async create(createGymDto: CreateGymDto): Promise<GymResponseDto> {
+    const isGymExists = await this.gymDal.isGymExists(
+      createGymDto.name,
+      createGymDto.location,
+    );
 
-    await newWorkout.save();
+    if (isGymExists) {
+      throw new Error('GymExists');
+    }
 
-    res.data = newWorkout;
-    return res;
+    const newGym = await this.gymDal.createGym(createGymDto);
+
+    return newGym;
   }
 
-  findAll() {
-    return `This action returns all workout`;
+  async findOne(id: string): Promise<GymResponseDto> {
+    const gym = await this.gymDal.findById(id);
+    if (!gym) {
+      throw Error('GymDoesntExists');
+    }
+
+    return gym;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} workout`;
+  update(id: string, updateGymDto: UpdateGymDto) {
+    const objId = new ObjectId(id);
+    const updatedGym = this.gymDal.findByIdAndUpdate(objId, updateGymDto);
+
+    return updatedGym;
   }
 
-  update(id: number, updateGymDto: UpdateGymDto) {
-    return `This action updates a #${id} workout`;
-  }
+  deleteGym(id: string) {
+    const deleteResponse = this.gymDal.findByIdAndDelete(id);
+    if (deleteResponse) {
+      return true;
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} workout`;
+    return false;
   }
 }

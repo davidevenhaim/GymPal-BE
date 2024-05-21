@@ -4,12 +4,13 @@ import {
   MaxLength,
   MinLength,
 } from '@nestjs/class-validator';
-import { Prop } from '@nestjs/mongoose';
 
 //   @@ Utils
 import { MAX_STRING_LENGTH } from '../../common/utils/constants';
+import { Prop } from '@nestjs/mongoose';
+import { Workout } from '../../workout/workout.schema';
 
-export class CreateUserDto {
+export class UpdateUserReponseDto {
   @Prop({ type: 'string', unique: true })
   @IsNotEmpty()
   @IsString()
@@ -24,10 +25,6 @@ export class CreateUserDto {
   @MaxLength(MAX_STRING_LENGTH)
   name: string;
 
-  @Prop({ type: 'string' })
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(6)
-  @MaxLength(MAX_STRING_LENGTH)
-  password: string;
+  @Prop({ type: Workout })
+  workouts: Workout[];
 }

@@ -2,12 +2,17 @@ import { Injectable } from '@nestjs/common';
 
 // @@ Mongoose
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId } from 'mongoose';
+import { Model } from 'mongoose';
 
 // @@ Schemas
-import { User } from '../common/schemas/user.schema';
+import { User } from './user.schema';
+
+// @@ Dtos
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+
+// @@ Types
+import { ObjectId } from 'typeorm';
 
 @Injectable()
 export class UserDal {
@@ -16,7 +21,7 @@ export class UserDal {
     private userModel: Model<User>,
   ) {}
 
-  async createUser(createUserDto: CreateUserDto) {
+  async createUser(createUserDto: CreateUserDto): Promise<User | undefined> {
     const newUser = new this.userModel(createUserDto);
     await newUser.save();
 
@@ -25,20 +30,27 @@ export class UserDal {
     return newUser;
   }
 
-  async findById(id: string): Promise<User | undefined> {
+  findById(id: string): Promise<User | undefined> {
     return this.userModel.findById(id);
   }
 
-  async findByUsername(username: string): Promise<User | undefined> {
-    return this.userModel.findOne({ where: { username } });
+  findByUsername(username: string): Promise<User | undefined> {
+    return this.userModel.findOne({ username });
   }
 
-  async findByIdAndUpdate(id: ObjectId, updateUserDto: UpdateUserDto) {
+  async findByIdAndUpdate(
+    id: ObjectId,
+    updateUserDto: UpdateUserDto,
+  ): Promise<User | undefined> {
     const updatedUser = await this.userModel.findByIdAndUpdate(
       id,
       updateUserDto,
     );
 
     return updatedUser;
+  }
+
+  findByIdAndDelete(id: string) {
+    return this.userModel.findByIdAndDelete(id);
   }
 }

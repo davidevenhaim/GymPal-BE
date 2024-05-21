@@ -5,13 +5,7 @@ import * as mongoose from 'mongoose';
 import { HydratedDocument } from 'mongoose';
 
 // @@ Typeorm
-import {
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  ObjectId,
-  UpdateDateColumn,
-} from 'typeorm';
+import { PrimaryGeneratedColumn, ObjectId } from 'typeorm';
 import {
   IsNotEmpty,
   IsString,
@@ -20,50 +14,46 @@ import {
 } from '@nestjs/class-validator';
 
 // @@ Schemas
-import { Workout } from '../schemas/workout.schema';
+import { Workout } from '../workout/workout.schema';
 
 // @@ Constants
-import { MAX_STRING_LENGTH } from '../utils/constants';
+import { MAX_STRING_LENGTH } from '../common/utils/constants';
 
 export type UserDocument = HydratedDocument<User>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class User {
   @PrimaryGeneratedColumn('uuid')
   _id: ObjectId;
 
-  @Column({ type: 'varchar', unique: true })
+  @Prop({
+    type: 'string',
+    // unique: true // Just for testing.
+  })
   @IsNotEmpty()
   @IsString()
   @MinLength(3)
   @MaxLength(MAX_STRING_LENGTH)
   username: string;
 
-  @Column({ type: 'varchar' })
+  @Prop({ type: 'string' })
   @IsNotEmpty()
   @IsString()
   @MinLength(2)
   @MaxLength(MAX_STRING_LENGTH)
   name: string;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Prop({ type: 'string' })
   @IsNotEmpty()
   @IsString()
   @MinLength(6)
   @MaxLength(MAX_STRING_LENGTH)
   password: string;
 
-  @CreateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-  })
+  @Prop({ default: mongoose.now() })
   createdAt: Date;
 
-  @UpdateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-    onUpdate: 'CURRENT_TIMESTAMP(6)',
-  })
+  @Prop({ default: mongoose.now() })
   updatedAt: Date;
 
   @Prop({

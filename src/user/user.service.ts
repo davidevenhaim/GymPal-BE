@@ -1,104 +1,101 @@
-import * as bcrypt from 'bcrypt';
 import {
   BadRequestException,
-  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-
-// @@ Mongoose
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 
 // @@ Schemas
-import { User } from '../common/schemas/user.schema';
+import { User } from './user.schema';
 
-// @@ Constants
-import { HASH_SALT_ROUNDS } from '../common/utils/constants';
+// @@ Services
+import { AuthenticationService } from '../authentication/authentication.service';
+
+// @@ DAL
+import { UserDal } from './user.dal';
 
 // @@ Dto's
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import {
-  getNewServerResponse,
-  iServerResponse,
-} from '../common/dto/response.dto';
-import { UserDal } from './user.dal';
+import { UserReponseDto } from './dto/user-response.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+import { ObjectId } from 'typeorm';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<User>,
-    private jwtService: JwtService,
+    private authService: AuthenticationService,
     private readonly userDal: UserDal,
   ) {}
 
-  async registerUser(user: User): Promise<iServerResponse> {
-    let res = getNewServerResponse();
-
+  async registerUser(user: CreateUserDto): Promise<UserReponseDto> {
     const isUserExists = await this.userDal.findByUsername(user.username);
     if (isUserExists) {
       console.warn('Trying to create a user that already exists.');
       throw new BadRequestException('userExists');
     }
 
-    const hashedPassword = await bcrypt.hash(user.password, HASH_SALT_ROUNDS);
+    const hashedPassword = await this.authService.encryptPassword(
+      user.password,
+    );
 
-    res = await this.create({ ...user, password: hashedPassword });
-
-    return res;
-  }
-
-  async create(createUserDto: CreateUserDto): Promise<iServerResponse> {
-    const res = getNewServerResponse();
-
-    const newUser = this.userDal.createUser(createUserDto);
-
-    const token = await this.jwtService.signAsync({
-      ...newUser,
+    const newUser = await this.userDal.createUser({
+      ...user,
+      password: hashedPassword,
     });
 
-    res.data = {
-      token,
-    };
+    const token = await this.authService.signToken(newUser);
 
-    return res;
+    return { user: newUser, token };
   }
 
-  async findOne(id: string): Promise<iServerResponse> {
-    const res = getNewServerResponse();
+  async loginUser(loginUserDto: LoginUserDto): Promise<UserReponseDto> {
+    const user = await this.userDal.findByUsername(loginUserDto.username);
 
+    if (!user) {
+      throw Error("User doesn't exists");
+    }
+
+    const isPasswordMatch = await this.authService.isPasswordMatch(
+      user.password,
+      loginUserDto.password,
+    );
+    if (!isPasswordMatch) {
+      throw new Error('invalidPassword');
+    }
+
+    const token = await this.authService.signToken(user);
+
+    return { user, token };
+  }
+
+  async findOne(id: string): Promise<Partial<UserReponseDto>> {
     const user = await this.userDal.findById(id);
     if (!user) {
       console.warn("Searching for a user that coudn't be found.");
       throw new NotFoundException("User couldn't be found.");
     }
 
-    res.data = user;
-    return res;
+    return { user };
   }
 
   async update(
     id: string,
     updateUserDto: UpdateUserDto,
-  ): Promise<iServerResponse> {
-    const res = getNewServerResponse();
-
-    const updatedUser = await this.userModel.findByIdAndUpdate(
-      id,
+  ): Promise<Partial<UserReponseDto>> {
+    const user = await this.userDal.findByIdAndUpdate(
+      new ObjectId(id),
       updateUserDto,
     );
 
-    res.data = updatedUser;
-    return res;
+    return { user };
   }
 
-  async remove(id: string) {
-    const res = getNewServerResponse();
-    await this.userModel.findByIdAndDelete(id);
+  async deleteGym(id: string): Promise<boolean> {
+    const deleteResult = this.userDal.findByIdAndDelete(id);
+    if (deleteResult) {
+      return true;
+    }
 
-    res.msg = 'Deleted succesfully';
-    return res;
+    return false;
   }
 }

@@ -1,33 +1,22 @@
+//   @@ Utils
 import {
   IsNotEmpty,
   IsString,
   MaxLength,
   MinLength,
 } from '@nestjs/class-validator';
-import { Prop } from '@nestjs/mongoose';
-
-//   @@ Utils
 import { MAX_STRING_LENGTH } from '../../common/utils/constants';
 
-export class CreateUserDto {
-  @Prop({ type: 'string', unique: true })
+export class LoginUserDto {
   @IsNotEmpty()
   @IsString()
   @MinLength(3)
   @MaxLength(MAX_STRING_LENGTH)
   username: string;
 
-  @Prop({ type: 'string' })
   @IsNotEmpty()
   @IsString()
-  @MinLength(2)
-  @MaxLength(MAX_STRING_LENGTH)
-  name: string;
-
-  @Prop({ type: 'string' })
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(6)
+  @MinLength(3)
   @MaxLength(MAX_STRING_LENGTH)
   password: string;
 }

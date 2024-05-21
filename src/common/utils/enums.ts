@@ -1,11 +1,3 @@
-export enum ExerciseType {
-  LEG = 'leg',
-  ARM = 'arm',
-  BACK = 'back',
-  CHEST = 'chest',
-  CARDIO = 'cardio',
-}
-
 export enum DaysOfWeek {
   Sunday = 0,
   Monday = 1,

@@ -7,7 +7,7 @@ import {
 } from '../common/dto/response.dto';
 
 // @@ Schemas
-import { Workout } from '../common/schemas/workout.schema';
+import { Workout } from './workout.schema';
 
 // @@ Mongoose
 import { InjectModel } from '@nestjs/mongoose';
