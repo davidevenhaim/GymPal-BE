@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 // @@ DAL
 import { GymDal } from './gym.dal';
@@ -20,7 +24,7 @@ export class GymService {
     );
 
     if (isGymExists) {
-      throw new Error('GymExists');
+      throw new BadRequestException('GymExists');
     }
 
     const newGym = await this.gymDal.createGym(createGymDto);
@@ -31,7 +35,7 @@ export class GymService {
   async findOne(id: string): Promise<GymResponseDto> {
     const gym = await this.gymDal.findById(id);
     if (!gym) {
-      throw Error('GymDoesntExists');
+      throw new NotFoundException('GymDoesntExists');
     }
 
     return gym;

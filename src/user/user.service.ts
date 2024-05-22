@@ -2,10 +2,8 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
-
-// @@ Schemas
-import { User } from './user.schema';
 
 // @@ Services
 import { AuthenticationService } from '../authentication/authentication.service';
@@ -52,7 +50,7 @@ export class UserService {
     const user = await this.userDal.findByUsername(loginUserDto.username);
 
     if (!user) {
-      throw Error("User doesn't exists");
+      throw new NotFoundException("User doesn't exists");
     }
 
     const isPasswordMatch = await this.authService.isPasswordMatch(
@@ -60,7 +58,7 @@ export class UserService {
       loginUserDto.password,
     );
     if (!isPasswordMatch) {
-      throw new Error('invalidPassword');
+      throw new UnauthorizedException('invalidPassword');
     }
 
     const token = await this.authService.signToken(user);

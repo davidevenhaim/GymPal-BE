@@ -7,7 +7,11 @@ import {
 import { Prop } from '@nestjs/mongoose';
 
 //   @@ Utils
-import { MAX_STRING_LENGTH } from '../../common/utils/constants';
+import {
+  MAX_STRING_LENGTH,
+  MIN_PASSWORD_LENGTH,
+  MIN_STRING_LENGTH,
+} from '../../common/utils/constants';
 
 export class CreateUserDto {
   @Prop({ type: 'string', unique: true })
@@ -20,14 +24,14 @@ export class CreateUserDto {
   @Prop({ type: 'string' })
   @IsNotEmpty()
   @IsString()
-  @MinLength(2)
+  @MinLength(MIN_STRING_LENGTH)
   @MaxLength(MAX_STRING_LENGTH)
   name: string;
 
   @Prop({ type: 'string' })
   @IsNotEmpty()
   @IsString()
-  @MinLength(6)
+  @MinLength(MIN_PASSWORD_LENGTH)
   @MaxLength(MAX_STRING_LENGTH)
   password: string;
 }
