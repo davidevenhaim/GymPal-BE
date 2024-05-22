@@ -6,12 +6,12 @@ import { CreateFeedbackDto } from './dto/create-feedback.dto';
 export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
 
-  @Post()
+  @Post('create')
   create(@Body() createFeedbackDto: CreateFeedbackDto) {
     return this.feedbackService.create(createFeedbackDto);
   }
 
-  @Get('/gym/:id')
+  @Get('gym/:id')
   findAll(@Param('id') id: string) {
     return this.feedbackService.findAllForGym(id);
   }

@@ -24,13 +24,13 @@ import { UserTransformInterceptor } from '../common/interceptor/user-transform.i
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('/register')
+  @Post('register')
   @UseInterceptors(UserTransformInterceptor)
   registerUser(@Body() createUserDto: CreateUserDto) {
     return this.userService.registerUser(createUserDto);
   }
 
-  @Post('/login')
+  @Post('login')
   @UseInterceptors(UserTransformInterceptor)
   loginUser(@Body() loginUserDto: LoginUserDto) {
     return this.userService.loginUser(loginUserDto);
@@ -41,7 +41,7 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   @UseInterceptors(UserTransformInterceptor)
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);

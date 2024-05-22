@@ -25,7 +25,7 @@ export class GymController {
     return this.GymService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   update(@Param('id') id: string, @Body() updateWorkoutDto: UpdateGymDto) {
     return this.GymService.update(id, updateWorkoutDto);
   }
