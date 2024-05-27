@@ -17,6 +17,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserReponseDto } from './dto/user-response.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { ObjectId } from 'typeorm';
+import { GetUserDto } from './dto/get-user-data.dto';
 
 @Injectable()
 export class UserService {
@@ -66,14 +67,16 @@ export class UserService {
     return { user, token };
   }
 
-  async findOne(id: string): Promise<Partial<UserReponseDto>> {
-    const user = await this.userDal.findById(id);
-    if (!user) {
-      console.warn("Searching for a user that coudn't be found.");
-      throw new NotFoundException("User couldn't be found.");
+  async getUser(data: GetUserDto): Promise<UserReponseDto> {
+    try {
+      await this.authService.verifyToken(data.token);
+    } catch (err) {
+      throw new UnauthorizedException('invalidToken');
     }
 
-    return { user };
+    const user = await this.userDal.findById(data.id);
+
+    return { user, token: data.token };
   }
 
   async update(
@@ -88,7 +91,7 @@ export class UserService {
     return { user };
   }
 
-  async deleteGym(id: string): Promise<boolean> {
+  async deleteUser(id: string): Promise<boolean> {
     const deleteResult = this.userDal.findByIdAndDelete(id);
     if (deleteResult) {
       return true;

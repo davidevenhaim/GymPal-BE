@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
   Patch,
@@ -19,6 +18,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 
 // @@ Interceptors
 import { UserTransformInterceptor } from '../common/interceptor/user-transform.interceptor';
+import { GetUserDto } from './dto/get-user-data.dto';
 
 @Controller('user')
 export class UserController {
@@ -36,9 +36,10 @@ export class UserController {
     return this.userService.loginUser(loginUserDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(id);
+  @Post('getUser')
+  @UseInterceptors(UserTransformInterceptor)
+  getUserFromToken(@Body() data: GetUserDto) {
+    return this.userService.getUser(data);
   }
 
   @Patch('update/:id')
@@ -49,6 +50,6 @@ export class UserController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.userService.deleteGym(id);
+    return this.userService.deleteUser(id);
   }
 }

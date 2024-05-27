@@ -11,10 +11,14 @@ import { HASH_SALT_ROUNDS } from '../common/utils/constants';
 export class AuthenticationService {
   constructor(private readonly jwtService: JwtService) {}
 
-  signToken(tokenData: Object | Array<any>) {
+  signToken(tokenData: any) {
     return this.jwtService.signAsync({
       ...tokenData,
     });
+  }
+
+  decodeToken(token: string) {
+    return this.jwtService.decode(token);
   }
 
   verifyToken(token: string) {

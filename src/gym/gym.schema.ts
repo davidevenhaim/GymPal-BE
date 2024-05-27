@@ -61,9 +61,6 @@ export class Gym {
 export const GymSchema = SchemaFactory.createForClass(Gym);
 
 export class WorkHours {
-  @PrimaryGeneratedColumn('uuid')
-  _id: ObjectId;
-
   @Prop({ name: 'isOpen', type: Boolean, default: true })
   isOpen: boolean; // for closed days.
 

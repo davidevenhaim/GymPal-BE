@@ -27,11 +27,13 @@ export class UserTransformInterceptor implements NestInterceptor {
 
     return {
       token: data.token,
-      _id,
-      name,
-      username,
-      workouts,
-      createdAt,
+      user: {
+        id: _id,
+        name,
+        username,
+        workouts,
+        createdAt,
+      },
     };
   }
 }
