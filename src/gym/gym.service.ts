@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { ObjectId } from 'typeorm';
 
 // @@ DAL
 import { GymDal } from './gym.dal';
@@ -10,8 +11,11 @@ import { GymDal } from './gym.dal';
 // @@ Dto's
 import { CreateGymDto } from './dto/create-gym.dto';
 import { UpdateGymDto } from './dto/update-gym.dto';
-import { ObjectId } from 'typeorm';
 import { GymResponseDto } from './dto/gym-response.dto';
+
+// @@ Utils
+import { generateRandomGym } from '../common/utils/generateGym';
+import { isMoreThanMax } from '../common/utils/helperFunctions';
 
 @Injectable()
 export class GymService {
@@ -32,6 +36,25 @@ export class GymService {
     return newGym;
   }
 
+  async generateNewGyms(count: number): Promise<boolean> {
+    if (isNaN(count)) {
+      return false;
+    }
+    const numberOfGmys = isMoreThanMax(count);
+
+    const promisesArr = [];
+    for (let i = 0; i < numberOfGmys; i++) {
+      const createGymDto = generateRandomGym();
+
+      const newGym = this.gymDal.createGym(createGymDto);
+      promisesArr.push(newGym);
+    }
+
+    await Promise.all(promisesArr);
+
+    return true;
+  }
+
   async findOne(id: string): Promise<GymResponseDto> {
     const gym = await this.gymDal.findById(id);
     if (!gym) {
@@ -41,16 +64,33 @@ export class GymService {
     return gym;
   }
 
-  update(id: string, updateGymDto: UpdateGymDto) {
+  async findAll(): Promise<GymResponseDto[]> {
+    const gyms = await this.gymDal.findAll();
+
+    return gyms;
+  }
+
+  async update(id: string, updateGymDto: UpdateGymDto) {
     const objId = new ObjectId(id);
-    const updatedGym = this.gymDal.findByIdAndUpdate(objId, updateGymDto);
+    const updatedGym = await this.gymDal.findByIdAndUpdate(objId, updateGymDto);
 
     return updatedGym;
   }
 
-  deleteGym(id: string) {
-    const deleteResponse = this.gymDal.findByIdAndDelete(id);
-    if (deleteResponse) {
+  async deleteAll() {
+    const deleteResponse = await this.gymDal.deleteAll();
+
+    if (deleteResponse.deletedCount > 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  async deleteGym(id: string) {
+    const deleteResponse = await this.gymDal.findByIdAndDelete(id);
+
+    if (deleteResponse.deletedCount > 0) {
       return true;
     }
 

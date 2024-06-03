@@ -15,10 +15,10 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
+import { GetUserDto } from './dto/get-user-data.dto';
 
 // @@ Interceptors
 import { UserTransformInterceptor } from '../common/interceptor/user-transform.interceptor';
-import { GetUserDto } from './dto/get-user-data.dto';
 
 @Controller('user')
 export class UserController {

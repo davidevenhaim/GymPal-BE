@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 // @@ Mongoose
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, mongo } from 'mongoose';
 
 // @@ Schemas
 import { Gym } from './gym.schema';
@@ -29,16 +29,12 @@ export class GymDal {
     return newGym;
   }
 
-  findByIdAndDelete(id): Promise<Gym | undefined> {
-    return this.GymModel.findByIdAndDelete(id);
-  }
-
   findById(id: string): Promise<Gym | undefined> {
     return this.GymModel.findById(id);
   }
 
-  findByName(name: string): Promise<Gym | undefined> {
-    return this.GymModel.findOne({ name });
+  findAll(): Promise<Gym[]> {
+    return this.GymModel.find();
   }
 
   findByIdAndUpdate(
@@ -46,6 +42,14 @@ export class GymDal {
     updateGymDto: UpdateGymDto,
   ): Promise<Gym | undefined> {
     return this.GymModel.findByIdAndUpdate(id, updateGymDto);
+  }
+
+  deleteAll(): Promise<mongo.DeleteResult> {
+    return this.GymModel.deleteMany();
+  }
+
+  findByIdAndDelete(id): Promise<mongo.DeleteResult> {
+    return this.GymModel.findByIdAndDelete(id);
   }
 
   isGymExists(name: string, location: Location) {

@@ -1,4 +1,5 @@
 // @@ Mongoose
+import { Schema as MongooseSchema } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { PrimaryGeneratedColumn } from 'typeorm';
@@ -23,18 +24,17 @@ import { User } from '../user/user.schema';
 
 @Schema({ timestamps: true })
 export class Feedback {
-  @Prop({ type: 'string' })
   @PrimaryGeneratedColumn()
   _id: ObjectId;
 
-  @Prop({ type: 'string' })
+  @Prop({ type: MongooseSchema.Types.String })
   @IsNotEmpty()
   @IsString()
   @MinLength(2)
   @MaxLength(MAX_OPEN_INPUT_LENGTH)
   comment: string;
 
-  @Prop({ type: 'number' })
+  @Prop({ type: MongooseSchema.Types.Number })
   @IsNumber()
   rating: number;
 

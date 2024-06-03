@@ -27,7 +27,7 @@ export class CreateGymDto {
   @ValidateNested({ each: true })
   @ArrayMinSize(Object.keys(DaysOfWeek).length)
   @ArrayMaxSize(Object.keys(DaysOfWeek).length)
-  workingHours: WorkHours;
+  workingHours: WorkHours[];
 
   @ApiProperty({ name: 'rating', type: Number })
   @IsNumber()

@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -9,6 +9,7 @@ import { UserModule } from './user/user.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { GymModule } from './gym/gym.module';
 import { FeedbackModule } from './feedback/feedback.module';
+import { WebsocketGateway } from './websocket/websocket.gateway';
 
 @Module({
   imports: [
@@ -20,6 +21,6 @@ import { FeedbackModule } from './feedback/feedback.module';
     WorkoutModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, WebsocketGateway],
 })
 export class AppModule {}

@@ -1,4 +1,5 @@
 // @@ Class validators
+import { Schema as MongooseSchema } from 'mongoose';
 import { IsNotEmpty, IsString, MinLength } from '@nestjs/class-validator';
 
 // @@ Mongoose
@@ -15,7 +16,7 @@ export type WorkoutDocument = HydratedDocument<Workout>;
 
 @Schema()
 export class Workout {
-  @Prop({ type: 'string', length: MAX_STRING_LENGTH })
+  @Prop({ type: MongooseSchema.Types.String, length: MAX_STRING_LENGTH })
   @IsNotEmpty()
   @IsString()
   @MinLength(2)

@@ -1,4 +1,5 @@
 // @@ Mongoose
+import { Schema as MongooseSchema } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import * as mongoose from 'mongoose';
@@ -27,7 +28,7 @@ export class User {
   _id: ObjectId;
 
   @Prop({
-    type: 'string',
+    type: MongooseSchema.Types.String,
     // unique: true // Just for testing.
   })
   @IsNotEmpty()
@@ -36,14 +37,14 @@ export class User {
   @MaxLength(MAX_STRING_LENGTH)
   username: string;
 
-  @Prop({ type: 'string' })
+  @Prop({ type: MongooseSchema.Types.String })
   @IsNotEmpty()
   @IsString()
   @MinLength(2)
   @MaxLength(MAX_STRING_LENGTH)
   name: string;
 
-  @Prop({ type: 'string' })
+  @Prop({ type: MongooseSchema.Types.String })
   @IsNotEmpty()
   @IsString()
   @MinLength(6)
