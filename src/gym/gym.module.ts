@@ -13,8 +13,14 @@ import { GymService } from './gym.service';
 // @@ DAL - Data Acess Layer
 import { GymDal } from './gym.dal';
 
+// @@ Modules
+import { SocketModule } from '../socket/socket.module';
+
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Gym.name, schema: GymSchema }])],
+  imports: [
+    MongooseModule.forFeature([{ name: Gym.name, schema: GymSchema }]),
+    SocketModule,
+  ],
   controllers: [GymController],
   providers: [GymService, GymDal],
 })

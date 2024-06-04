@@ -1,6 +1,12 @@
 // @@ Class validators
 import { Schema as MongooseSchema } from 'mongoose';
-import { IsNotEmpty, IsString, MinLength } from '@nestjs/class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsString,
+  MinLength,
+  ValidateNested,
+} from '@nestjs/class-validator';
 
 // @@ Mongoose
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
@@ -14,6 +20,17 @@ import { Gym } from '../gym/gym.schema';
 
 export type WorkoutDocument = HydratedDocument<Workout>;
 
+export class Exercise {
+  @Prop({ type: MongooseSchema.Types.String })
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @Prop({ type: MongooseSchema.Types.String })
+  @IsString()
+  description: string;
+}
+
 @Schema()
 export class Workout {
   @Prop({ type: MongooseSchema.Types.String, length: MAX_STRING_LENGTH })
@@ -21,6 +38,11 @@ export class Workout {
   @IsString()
   @MinLength(2)
   name: string;
+
+  @Prop({ type: [Exercise] })
+  @IsArray()
+  @ValidateNested({ each: true })
+  exercises: Exercise[];
 
   @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Gym' }],

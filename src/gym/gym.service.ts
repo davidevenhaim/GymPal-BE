@@ -17,9 +17,15 @@ import { GymResponseDto } from './dto/gym-response.dto';
 import { generateRandomGym } from '../common/utils/generateGym';
 import { isMoreThanMax } from '../common/utils/helperFunctions';
 
+// @@ Services
+import { SocketGateway } from '../socket/socket.gateway';
+
 @Injectable()
 export class GymService {
-  constructor(private readonly gymDal: GymDal) {}
+  constructor(
+    private readonly gymDal: GymDal,
+    private readonly socketGateway: SocketGateway,
+  ) {}
 
   async create(createGymDto: CreateGymDto): Promise<GymResponseDto> {
     const isGymExists = await this.gymDal.isGymExists(
@@ -32,6 +38,8 @@ export class GymService {
     }
 
     const newGym = await this.gymDal.createGym(createGymDto);
+
+    this.socketGateway.sendMessageToAllClients(newGym);
 
     return newGym;
   }
@@ -50,7 +58,9 @@ export class GymService {
       promisesArr.push(newGym);
     }
 
-    await Promise.all(promisesArr);
+    const gyms = await Promise.all(promisesArr);
+
+    this.socketGateway.sendMessageToAllClients(gyms);
 
     return true;
   }
