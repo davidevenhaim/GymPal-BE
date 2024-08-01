@@ -1,4 +1,9 @@
+import { Model } from 'mongoose';
+import { ObjectId } from 'typeorm';
+
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+
 import { CreateWorkoutDto } from './dto/create-workout.dto';
 import { UpdateWorkoutDto } from './dto/update-workout.dto';
 import {
@@ -6,17 +11,15 @@ import {
   iServerResponse,
 } from '../common/dto/response.dto';
 
-// @@ Schemas
 import { Workout } from './workout.schema';
 
-// @@ Mongoose
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { WorkoutDal } from './workout.dal';
 
 @Injectable()
 export class WorkoutService {
   constructor(
     @InjectModel(Workout.name) private workoutModel: Model<Workout>,
+    private readonly workoutDal: WorkoutDal,
   ) {}
 
   async create(createWorkoutDto: CreateWorkoutDto): Promise<iServerResponse> {
@@ -29,19 +32,32 @@ export class WorkoutService {
     return res;
   }
 
-  findAll() {
-    return `This action returns all workout`;
+  async findAll() {
+    const allWorkouts = await this.workoutDal.findAll();
+
+    return allWorkouts;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} workout`;
+  async findOne(id: string) {
+    const workout = await this.findOne(id);
+
+    return workout;
   }
 
-  update(id: number, updateWorkoutDto: UpdateWorkoutDto) {
-    return `This action updates a #${id} workout`;
+  async update(id: string, updateWorkoutDto: UpdateWorkoutDto) {
+    const objId = new ObjectId(id);
+
+    const updatedGym = await this.workoutDal.findByIdAndUpdate(
+      objId,
+      updateWorkoutDto,
+    );
+
+    return updatedGym;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} workout`;
+  async deleteWorkout(id: string) {
+    const deletedWorkout = await this.workoutDal.findByIdAndDelete(id);
+
+    return deletedWorkout;
   }
 }

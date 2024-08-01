@@ -1,4 +1,3 @@
-// @@ Class validators
 import { Schema as MongooseSchema } from 'mongoose';
 import {
   IsArray,
@@ -8,14 +7,11 @@ import {
   ValidateNested,
 } from '@nestjs/class-validator';
 
-// @@ Mongoose
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
-// @@ Constants
 import { MAX_STRING_LENGTH } from '../common/utils/constants';
 
-// @@ Schemas
 import { Gym } from '../gym/gym.schema';
 
 export type WorkoutDocument = HydratedDocument<Workout>;
