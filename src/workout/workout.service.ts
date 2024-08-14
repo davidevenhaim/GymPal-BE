@@ -6,10 +6,6 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { CreateWorkoutDto } from './dto/create-workout.dto';
 import { UpdateWorkoutDto } from './dto/update-workout.dto';
-import {
-  getNewServerResponse,
-  iServerResponse,
-} from '../common/dto/response.dto';
 
 import { Workout } from './workout.schema';
 
@@ -22,14 +18,12 @@ export class WorkoutService {
     private readonly workoutDal: WorkoutDal,
   ) {}
 
-  async create(createWorkoutDto: CreateWorkoutDto): Promise<iServerResponse> {
-    const res = getNewServerResponse();
+  async create(createWorkoutDto: CreateWorkoutDto) {
     const newWorkout = new this.workoutModel(createWorkoutDto);
 
     await newWorkout.save();
 
-    res.data = newWorkout;
-    return res;
+    return newWorkout;
   }
 
   async findAll() {
@@ -38,8 +32,13 @@ export class WorkoutService {
     return allWorkouts;
   }
 
+  async findByGym(gymId: string): Promise<Workout[]> {
+    const gymWorkouts = await this.workoutDal.findByGymId(gymId);
+    return gymWorkouts;
+  }
+
   async findOne(id: string) {
-    const workout = await this.findOne(id);
+    const workout = await this.workoutDal.findById(id);
 
     return workout;
   }
@@ -53,11 +52,5 @@ export class WorkoutService {
     );
 
     return updatedGym;
-  }
-
-  async deleteWorkout(id: string) {
-    const deletedWorkout = await this.workoutDal.findByIdAndDelete(id);
-
-    return deletedWorkout;
   }
 }

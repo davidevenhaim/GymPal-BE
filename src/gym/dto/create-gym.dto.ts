@@ -8,28 +8,28 @@ import {
 } from 'class-validator';
 
 import { DaysOfWeek } from '../../common/utils/enums';
-import { ApiProperty } from '@nestjs/swagger';
 
 // @@ Schemas
 import { WorkHours } from '../gym.schema';
 import { Location } from '../../common/utils/classes';
+import { Prop } from '@nestjs/mongoose';
 
 export class CreateGymDto {
-  @ApiProperty({ name: 'name', type: String })
+  @Prop({ name: 'name', type: String })
   @IsString()
   name: string;
 
-  @ApiProperty({ name: 'location', type: Location })
+  @Prop({ name: 'location', type: Location })
   location: Location;
 
-  @ApiProperty({ name: 'workingHours', type: Array })
+  @Prop({ name: 'workingHours', type: Array })
   @IsArray()
   @ValidateNested({ each: true })
   @ArrayMinSize(Object.keys(DaysOfWeek).length)
   @ArrayMaxSize(Object.keys(DaysOfWeek).length)
   workingHours: WorkHours[];
 
-  @ApiProperty({ name: 'rating', type: Number })
+  @Prop({ name: 'rating', type: Number })
   @IsNumber()
   rating: number;
 }

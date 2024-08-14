@@ -12,9 +12,6 @@ import { ObjectId } from 'typeorm';
 import { UpdateWorkoutDto } from './dto/update-Workout.dto';
 import { CreateWorkoutDto } from './dto/create-Workout.dto';
 
-//
-import { Location } from '../common/utils/classes';
-
 @Injectable()
 export class WorkoutDal {
   constructor(
@@ -29,6 +26,10 @@ export class WorkoutDal {
     await newWorkout.save();
 
     return newWorkout;
+  }
+
+  findByGymId(id: string): Promise<Workout[] | undefined> {
+    return this.WorkoutModel.find({ gym: id });
   }
 
   findById(id: string): Promise<Workout | undefined> {
@@ -48,13 +49,5 @@ export class WorkoutDal {
 
   findByIdAndDelete(id): Promise<mongo.DeleteResult> {
     return this.WorkoutModel.findByIdAndDelete(id);
-  }
-
-  isWorkoutExists(name: string, location: Location) {
-    return this.WorkoutModel.findOne({
-      name,
-      'location.lat': location.lat,
-      'location.lng': location.lng,
-    });
   }
 }

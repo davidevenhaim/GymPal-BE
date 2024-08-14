@@ -27,10 +27,7 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   _id: ObjectId;
 
-  @Prop({
-    type: MongooseSchema.Types.String,
-    // unique: true // Just for testing.
-  })
+  @Prop({ type: MongooseSchema.Types.String })
   @IsNotEmpty()
   @IsString()
   @MinLength(3)

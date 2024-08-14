@@ -12,7 +12,9 @@ import mongoose, { HydratedDocument } from 'mongoose';
 
 import { MAX_STRING_LENGTH } from '../common/utils/constants';
 
+// @@ Schemas
 import { Gym } from '../gym/gym.schema';
+import { User } from '../user/user.schema';
 
 export type WorkoutDocument = HydratedDocument<Workout>;
 
@@ -44,6 +46,11 @@ export class Workout {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Gym' }],
   })
   gym: Gym;
+
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  })
+  user: User;
 }
 
 export const WorkoutSchema = SchemaFactory.createForClass(Workout);
