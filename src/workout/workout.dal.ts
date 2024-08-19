@@ -19,17 +19,18 @@ export class WorkoutDal {
     private WorkoutModel: Model<Workout>,
   ) {}
 
-  async createWorkout(
-    createWorkoutDto: CreateWorkoutDto,
-  ): Promise<Workout | undefined> {
+  async createWorkout(createWorkoutDto: CreateWorkoutDto): Promise<boolean> {
     const newWorkout = new this.WorkoutModel(createWorkoutDto);
     await newWorkout.save();
 
-    return newWorkout;
+    if (newWorkout.errors) {
+      return false;
+    }
+    return true;
   }
 
-  findByGymId(id: string): Promise<Workout[] | undefined> {
-    return this.WorkoutModel.find({ gym: id });
+  findByGymId(id: string, userId: string): Promise<Workout[] | undefined> {
+    return this.WorkoutModel.find({ gym: id, user: userId });
   }
 
   findById(id: string): Promise<Workout | undefined> {
@@ -49,5 +50,9 @@ export class WorkoutDal {
 
   findByIdAndDelete(id): Promise<mongo.DeleteResult> {
     return this.WorkoutModel.findByIdAndDelete(id);
+  }
+
+  deleteAll(): Promise<mongo.DeleteResult> {
+    return this.WorkoutModel.deleteMany();
   }
 }

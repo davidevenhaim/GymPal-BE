@@ -10,6 +10,7 @@ import { UserDal } from './user.dal';
 
 // @@ Modules
 import { AuthenticationModule } from '../authentication/authentication.module';
+import { AuthGuard } from '../common/guards/auth.guard';
 
 @Module({
   imports: [
@@ -17,6 +18,6 @@ import { AuthenticationModule } from '../authentication/authentication.module';
     AuthenticationModule,
   ],
   controllers: [UserController],
-  providers: [UserService, UserDal],
+  providers: [UserService, UserDal, AuthGuard],
 })
 export class UserModule {}

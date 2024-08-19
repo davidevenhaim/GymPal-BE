@@ -15,13 +15,18 @@ import { GymDal } from './gym.dal';
 
 // @@ Modules
 import { SocketModule } from '../socket/socket.module';
+import { AuthenticationModule } from '../authentication/authentication.module';
+
+// @@ Guards
+import { AuthGuard } from '../common/guards/auth.guard';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Gym.name, schema: GymSchema }]),
     SocketModule,
+    AuthenticationModule,
   ],
   controllers: [GymController],
-  providers: [GymService, GymDal],
+  providers: [GymService, GymDal, AuthGuard],
 })
 export class GymModule {}

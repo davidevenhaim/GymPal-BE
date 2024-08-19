@@ -6,11 +6,9 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
-import {
-  getErrLogMsg,
-  getNewServerResponse,
-  serverResponseErr,
-} from '../dto/response.dto';
+
+// @@ Utils
+import { getErrLogMsg } from '../utils/helperFunctions';
 
 const DEFAULT_ERR_MSG = 'Internal server error';
 
@@ -32,12 +30,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getResponse()
         : DEFAULT_ERR_MSG;
 
-    let res = getNewServerResponse();
-    serverResponseErr(res, {
-      status,
-      msg,
-    });
-
     if (status !== HttpStatus.BAD_REQUEST && status !== HttpStatus.NOT_FOUND) {
       const errLogMsg = getErrLogMsg(status, msg);
       console.error(errLogMsg);
@@ -47,7 +39,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
-      ...res,
     });
   }
 }

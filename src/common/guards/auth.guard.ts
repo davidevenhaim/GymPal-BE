@@ -23,8 +23,7 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('No token was provided.');
     }
     const payload = await this.authService.verifyToken(token);
-
-    request['user'] = payload;
+    request['user'] = payload._doc;
 
     return true;
   }

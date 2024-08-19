@@ -1,8 +1,25 @@
-import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  UseGuards,
+  Delete,
+  Req,
+} from '@nestjs/common';
 import { WorkoutService } from './workout.service';
+
+// @@ Dto's
 import { CreateWorkoutDto } from './dto/create-workout.dto';
 import { UpdateWorkoutDto } from './dto/update-workout.dto';
 
+// @@ Guards
+import { AuthGuard } from '../common/guards/auth.guard';
+import { Request } from 'express';
+
+@UseGuards(AuthGuard)
 @Controller('workout')
 export class WorkoutController {
   constructor(private readonly workoutService: WorkoutService) {}
@@ -18,8 +35,9 @@ export class WorkoutController {
   }
 
   @Get('gym/:id')
-  findByGym(@Param('id') id: string) {
-    return this.workoutService.findByGym(id);
+  findByGym(@Param('id') id: string, @Req() request: Request) {
+    const userId = request['user']?._id;
+    return this.workoutService.findByGym(id, userId);
   }
 
   @Get(':id')
@@ -30,5 +48,10 @@ export class WorkoutController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateWorkoutDto: UpdateWorkoutDto) {
     return this.workoutService.update(id, updateWorkoutDto);
+  }
+
+  @Delete('deleteall')
+  deleteAll() {
+    return this.workoutService.deleteAll();
   }
 }

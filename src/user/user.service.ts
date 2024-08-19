@@ -61,6 +61,7 @@ export class UserService {
     if (!isPasswordMatch) {
       throw new UnauthorizedException('invalidPassword');
     }
+    console.log('USER IS: ', user);
 
     const token = await this.authService.signToken(user);
 

@@ -1,8 +1,6 @@
-import { Model } from 'mongoose';
 import { ObjectId } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 
 import { CreateWorkoutDto } from './dto/create-workout.dto';
 import { UpdateWorkoutDto } from './dto/update-workout.dto';
@@ -13,17 +11,10 @@ import { WorkoutDal } from './workout.dal';
 
 @Injectable()
 export class WorkoutService {
-  constructor(
-    @InjectModel(Workout.name) private workoutModel: Model<Workout>,
-    private readonly workoutDal: WorkoutDal,
-  ) {}
+  constructor(private readonly workoutDal: WorkoutDal) {}
 
   async create(createWorkoutDto: CreateWorkoutDto) {
-    const newWorkout = new this.workoutModel(createWorkoutDto);
-
-    await newWorkout.save();
-
-    return newWorkout;
+    return await this.workoutDal.createWorkout(createWorkoutDto);
   }
 
   async findAll() {
@@ -32,8 +23,9 @@ export class WorkoutService {
     return allWorkouts;
   }
 
-  async findByGym(gymId: string): Promise<Workout[]> {
-    const gymWorkouts = await this.workoutDal.findByGymId(gymId);
+  async findByGym(gymId: string, userId: string): Promise<Workout[]> {
+    const gymWorkouts = await this.workoutDal.findByGymId(gymId, userId);
+    console.log(gymWorkouts);
     return gymWorkouts;
   }
 
@@ -52,5 +44,9 @@ export class WorkoutService {
     );
 
     return updatedGym;
+  }
+
+  async deleteAll() {
+    return this.workoutDal.deleteAll();
   }
 }

@@ -7,17 +7,22 @@ import {
   Param,
   Delete,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 // @@ Services
 import { GymService } from './gym.service';
+
+// @@ Guards
+import { AuthGuard } from '../common/guards/auth.guard';
 
 // @@ Dto's
 import { CreateGymDto } from './dto/create-gym.dto';
 import { UpdateGymDto } from './dto/update-gym.dto';
 
 // @@ Interceptors
-import { GymTransformInterceptor } from '../common/interceptor/gym-transform.interceptor';
+import { GymTransformInterceptor } from './interceptors/gym-transform.interceptor';
 
+@UseGuards(AuthGuard)
 @Controller('gym')
 export class GymController {
   constructor(private readonly GymService: GymService) {}

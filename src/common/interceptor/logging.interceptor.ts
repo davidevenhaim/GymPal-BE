@@ -15,14 +15,14 @@ export class LoggerInterceptor implements NestInterceptor {
       `Request received - with METHOD: ${req.method} -- To URL: ${req.url}`,
     );
 
-    const now = Date.now();
+    const timeBeforeRequest = Date.now();
 
     return next
       .handle()
       .pipe(
         tap(() =>
           console.log(
-            `Request with Method: ${req.method} -- To URL: ${req.url} took ${Date.now() - now}ms to be completed.`,
+            `Request with Method: ${req.method} -- To URL: ${req.url} took ${Date.now() - timeBeforeRequest}ms to be completed.`,
           ),
         ),
       );

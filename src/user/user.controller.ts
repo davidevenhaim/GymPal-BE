@@ -6,6 +6,7 @@ import {
   Param,
   Delete,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 
 // @@ Services
@@ -18,7 +19,10 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { GetUserDto } from './dto/get-user-data.dto';
 
 // @@ Interceptors
-import { UserTransformInterceptor } from '../common/interceptor/user-transform.interceptor';
+import { UserTransformInterceptor } from './interceptors/user-transform.interceptor';
+
+// @@ Guards
+import { AuthGuard } from '../common/guards/auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -43,12 +47,14 @@ export class UserController {
   }
 
   @Patch('update/:id')
+  @UseGuards(AuthGuard)
   @UseInterceptors(UserTransformInterceptor)
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard)
   remove(@Param('id') id: string) {
     return this.userService.deleteUser(id);
   }
